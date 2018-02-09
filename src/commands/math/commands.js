@@ -569,6 +569,10 @@ var Bracket = P(P(MathCommand, DelimsMixin), function(_, super_) {
     this.sides[L] = { ch: open, ctrlSeq: ctrlSeq };
     this.sides[R] = { ch: close, ctrlSeq: end };
   };
+
+  console.log('debug - this.side:', this.side);
+  console.log('debug - this.sides:', this.sides);
+
   _.numBlocks = function() { return 1; };
   _.html = function() { // wait until now so that .side may
     this.htmlTemplate = // be set by createLeftOf or parser
@@ -614,7 +618,9 @@ var Bracket = P(P(MathCommand, DelimsMixin), function(_, super_) {
                  || this.matchBrack(opts, -this.side, cursor.parent.parent);
       }
     }
+
     if (brack) {
+      console.log('debug createLeftOf:', brack);
       var side = this.side = -brack.side; // may be pipe with .side not yet set
       this.closeOpposing(brack);
       if (brack === cursor.parent.parent && cursor[side]) { // move the stuff between
@@ -631,6 +637,7 @@ var Bracket = P(P(MathCommand, DelimsMixin), function(_, super_) {
         brack.replaces(Fragment(cursor[-side], cursor.parent.ends[-side], side));
         cursor[-side] = 0;
       }
+      console.log('debug test:', brack);
       super_.createLeftOf.call(brack, cursor);
     }
     if (side === L) cursor.insAtLeftEnd(brack.ends[L]);
@@ -732,7 +739,7 @@ function bindCharBracketPair(open, ctrlSeq) {
   CharCmds[close] = bind(Bracket, R, open, close, ctrlSeq, end);
 }
 bindCharBracketPair('(');
-bindCharBracketPair('[');
+//bindCharBracketPair('[');
 bindCharBracketPair('{', '\\{');
 LatexCmds.langle = bind(Bracket, L, '&lang;', '&rang;', '\\langle ', '\\rangle ');
 LatexCmds.rangle = bind(Bracket, R, '&lang;', '&rang;', '\\langle ', '\\rangle ');
